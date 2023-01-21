@@ -36,5 +36,9 @@ This project is a job searching platform where users can search and apply for jo
 - webpack
 - jsPdf
 
+## Team
+- Daniel Arvili
+- Daniel Yakobov
+- Tomer Elimelech
 
 
