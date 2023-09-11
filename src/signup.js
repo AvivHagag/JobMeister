@@ -25,10 +25,28 @@ function DisplayDivBySelector(val) {
   }
 }
 
-$("#accessMenu").hide();
+$(document).ready(function() {
+  if (localStorage.getItem('darkMode') === 'enabled') {
+      activateDarkMode();
+      darkflag = 1;
+  } else {
+      deactivateDarkMode();
+      darkflag = 0;
+  }
+});
 
-  $("#darkBtn").click(function () {
-    if (darkflag === 0) {
+$("#accessMenu").hide();
+$("#darkBtn").click(function () {
+  if (darkflag === 0) {
+      activateDarkMode();
+      darkflag = 1;
+  } else {
+      deactivateDarkMode();
+      darkflag = 0;
+  }
+});
+
+function activateDarkMode() {
       $("#navbarCollapse").addClass("darkMode");
       $(".navbar").addClass("darkMode");
       $(".nav-item").addClass("whitetext");
@@ -43,10 +61,13 @@ $("#accessMenu").hide();
         $(".bgdark").removeClass("bg-light");
         $(".bgf").addClass("darkMode")
         $("body").addClass("darkMode");
-
-
-      darkflag = 1;
-    } else {
+        $(".LoginImg").attr("src", "img/try2.png");
+        $(".navbar-toggler").addClass("dark-toggler");
+        $(".navbar-toggler").addClass("dark-toggler2");
+        darkflag = 1;
+        localStorage.setItem('darkMode', 'enabled');  // Save to local storage
+      }
+      function deactivateDarkMode() {
       $("#navbarCollapse").removeClass("darkMode");
       $(".navbar").removeClass("darkMode");
       $(".nav-item").removeClass("whitetext");
@@ -61,11 +82,12 @@ $("#accessMenu").hide();
       $(".bgdark").addClass("bg-light");
       $(".bgdark").removeClass("darkMode");
       $(".bgf").removeClass("darkMode")
-
-
+      $(".LoginImg").attr("src", "img/try1.png");
+      $(".navbar-toggler").removeClass("dark-toggler");
+        $(".navbar-toggler").removeClass("dark-toggler2");
       darkflag = 0;
+      localStorage.setItem('darkMode', 'disabled'); // Save to local storage
     }
-  });
 
   $("#largeFont").click(function () {
     if (textflag === 0) {
@@ -92,13 +114,11 @@ $("#accessMenu").hide();
   $("#acessability").click(function () {
     if (flag === 0) {
       $("#acessability").addClass("widthAccess");
-      
       flag = 1;
     } else {
       $("#acessability").removeClass("widthAccess");
       flag = 0;
     }
-
     $("#accessMenu").toggle("drop");
     return false;
   });

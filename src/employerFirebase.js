@@ -9,8 +9,6 @@ import {
 } from "firebase/firestore";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import {} from "./main";
-import {} from "./emloyeer";
-import {} from "./createad";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDoC94Xlt0BHfsH_zLp8562xsKMW49mv8s",
@@ -35,13 +33,6 @@ let flag = 0;
 let darkflag = 0;
 let textflag = 0;
 let sended = [];
-// onAuthStateChanged(auth,(user)=>{
-//   console.log("User status changed",user);
-
-//   if(user==null) {
-//     location.href="404.html"
-//   }
-// })
 
 const adColRef = collection(db, "Ads");
 const docAllusers = collection(db, "users");
@@ -51,7 +42,6 @@ getDocs(docAllusers).then((snapshot) => {
     allUsers.push({ ...doc.data(), id: doc.id });
   });
   let userq = allUsers.length;
-  console.log(allUsers);
 
   for (let index = 0; index < userq; index++) {
     if (allUsers[index].email == logEmail) {
@@ -67,15 +57,32 @@ getDocs(docAllusers).then((snapshot) => {
 });
 
 onAuthStateChanged(auth, (user) => {
-  console.log("User status changed", user);
-  if (user != null) {
-    logEmail = user.email;
-  } else {
+  if (user == null) {
     location.href = "index.html";
+  } else {
+    logEmail = user.email;
+    let usernumber;
+      getDocs(docAllusers).then((snapshot) => {
+        let allUsers = []
+        snapshot.docs.forEach((doc)=>{
+          allUsers.push({...doc.data(), id:doc.id })
+        })
+        let userq=allUsers.length;
+        for (let index = 0; index < userq; index++) {
+          if(allUsers[index].email==logEmail)
+              usernumber=index;
+           }
+        if(allUsers[usernumber].eOrS=="Work Searcher") {
+          location.href="worksearcher.html"
+         }
+         if(allUsers[usernumber].eOrS==null) {
+          location.href="admin.html"
+       }
+      })
   }
 });
 
-const logoutButton = document.querySelector(".logoutBtn");
+const logoutButton = document.querySelector(".logoutBtn2");
 logoutButton.addEventListener("click", () => {
   signOut(auth)
     .then(() => {
@@ -83,7 +90,16 @@ logoutButton.addEventListener("click", () => {
       location.href = "index.html";
     })
     .catch((err) => {
-      console.log(err.message);
+    });
+});
+const logoutButton2 = document.querySelector(".logoutBtn3");
+logoutButton2.addEventListener("click", () => {
+  signOut(auth)
+    .then(() => {
+      alert("signout");
+      location.href = "index.html";
+    })
+    .catch((err) => {
     });
 });
 
@@ -96,7 +112,6 @@ getDocs(adColRef)
       Ads.push({ ...doc.data(), id: doc.id });
     });
     adSize = Ads.length;
-    console.log(Ads);
     for (let index = 0; index < adSize; index++) {
       let indexR = index + 1;
       if (Ads[index].emailofemployer == useremail) {
@@ -134,18 +149,16 @@ getDocs(adColRef)
       snapshot.docs.forEach((doc) => {
         sended.push({ ...doc.data(), id: doc.id });
       });
-      console.log(sended);
       let userNotifCount = 0;
       let sendedLength = sended.length;
       for (let f = 0; f < sendedLength; f++) {
         if (sended[f].emailofemployer == useremail) {
           userNotifCount++;
-          console.log("check");
         }
       }
       if (userNotifCount > 0) {
         $("#bellnotif").append(
-          "<span class='circlebell position-absolute start-150 translate-middle badge rounded-pill bg-danger'>" +
+          "<span class='circlebell translate-middle badge bg-danger'>" +
             userNotifCount +
             "</span>"
         );
@@ -156,8 +169,6 @@ getDocs(adColRef)
       $("#bell").click(function (e) {
         var color = $(this).text();
         if (down) {
-          // alert("check");
-          // $(".added1").hide();
           $("#box").toggle("drop");
           $("#box").css("height", "0px");
           $("#box").css("opacity", "0");
@@ -170,16 +181,12 @@ getDocs(adColRef)
           $("#box").css("opacity", "1");
           down = true;
         }
-        console.log("checkbell");
         let sendedLength = sended.length;
-        console.log(sendedLength);
         let userNotifCount1 = 0;
-
+  
         for (let i = 0; i < sendedLength; i++) {
           if (sended[i].emailofemployer === useremail) {
             userNotifCount1++;
-            console.log("checkit" + i);
-            console.log(sended[i].downloadLink);
             $("#box").append(
               "<div class='added1 notifications-item'> <img src='/dist/img/occpics/occ" +
                 sended[i].imgid +
@@ -202,9 +209,11 @@ getDocs(adColRef)
             }
           }
           document.querySelector("#notifcount").innerHTML = userNotifCount1;
+          if (localStorage.getItem('darkMode') === 'enabled') {
+            activateDarkMode();
+          }
         }
-
-        // }
+  
         return false;
       });
     });
@@ -214,12 +223,9 @@ getDocs(adColRef)
 
       if (buttonE) {
         buttonE.addEventListener("click", function () {
-          console.log("yougay");
           var buttonD = document.getElementById("YesDelete");
           if (buttonD) {
             buttonD.addEventListener("click", function () {
-              console.log("the index is:", index);
-              console.log(Ads[index]);
               var docDelAds = doc(db, "Ads", Ads[index].id);
               deleteDoc(docDelAds).then(() => {
                 location.reload();
@@ -230,7 +236,6 @@ getDocs(adColRef)
       }
       if (buttonE2) {
         buttonE2.addEventListener("click", function () {
-          console.log("younotgay" + index);
           document.querySelector("#Mtitle").innerHTML = Ads[index].title;
           if (Ads[index].company == null) {
             document.querySelector("#Mcompany").innerHTML = "חסוי";
@@ -252,10 +257,131 @@ getDocs(adColRef)
             "/dist/img/occpics/occ" + Ads[index].imgid + ".jpeg";
         });
       }
-
-      // });
+    }
+    if (localStorage.getItem('darkMode') === 'enabled') {
+      activateDarkMode();
     }
   })
   .catch((err) => {
-    console.log(err.message);
+  });
+
+  // Spinner
+var spinner = function () {
+  setTimeout(function () {
+    if ($("#spinner").length > 0) {
+      $("#spinner").removeClass("show");
+    }
+  }, 1);
+};
+spinner();
+
+
+$(document).ready(function() {
+  if (localStorage.getItem('darkMode') === 'enabled') {
+      activateDarkMode();
+      darkflag = 1;
+  } else {
+      deactivateDarkMode();
+      darkflag = 0;
+  }
+});
+
+$("#accessMenu").hide();
+$("#darkBtn").click(function () {
+  if (darkflag === 0) {
+      activateDarkMode();
+      darkflag = 1;
+  } else {
+      deactivateDarkMode();
+      darkflag = 0;
+  }
+});
+
+function activateDarkMode() {
+      $("#navbarCollapse").addClass("darkMode");
+      $(".navbar").addClass("darkMode");
+      $(".nav-item").addClass("whitetext");
+      $(".loginbtn").removeClass("btn-outline-dark");
+      $(".loginbtn").addClass("bg-white");
+      $("h1").addClass("whitetext");
+      $("h3").removeClass("text-black");
+      $("h3").addClass("whitetext");
+      $("h5").addClass("text-white");
+      $("p").addClass("text-white");
+      $("body").addClass("darkMode");
+      $(".row").addClass("darkMode");
+      $(".bgdark").removeClass("bg-light");
+      $(".bgf").addClass("darkMode");
+      $("h2").addClass("whitetext");
+      $(".card").addClass("bg-dark border border-secondary");
+      $(".modal-header").removeClass("bg-light")
+      $(".text-dark").addClass("whitetext");
+      $(".modal-content").addClass("darkMode");
+      $(".btn-close").addClass("btn-close-white");
+      $("#bellnotif").addClass("whitetext");
+      $(".notifications").addClass("darkMode");
+      $("head").append("<style id='darkModeStyles'>.notifications-item:hover { background-color: #A9A9A9 !important;}</style>");
+      $(".navbar-toggler").addClass("dark-toggler");
+      $(".navbar-toggler").addClass("dark-toggler2");
+      darkflag = 1;
+      localStorage.setItem('darkMode', 'enabled');  // Save to local storage
+    }
+    function deactivateDarkMode() {
+      $("#navbarCollapse").removeClass("darkMode");
+      $(".navbar").removeClass("darkMode");
+      $(".nav-item").removeClass("whitetext");
+      $(".loginbtn").removeClass("bg-white");
+      $(".loginbtn").addClass("btn-outline-dark");
+      $("h1").removeClass("whitetext");
+      $("h3").addClass("text-black");
+      $("h3").removeClass("whitetext");
+      $("h5").removeClass("text-white");
+      $("p").removeClass("text-white");
+      $("body").removeClass("darkMode");
+      $(".row").removeClass("darkMode");
+      $(".bgdark").addClass("bg-light");
+      $(".bgf").removeClass("darkMode");
+      $(".card").removeClass("bg-dark border border-secondary");
+      $("h2").removeClass("whitetext");
+      $(".modal-header").addClass("bg-light")
+      $(".text-dark").removeClass("whitetext");
+      $(".modal-content").removeClass("darkMode");
+      $(".btn-close").removeClass("btn-close-white");
+      $("#bellnotif").removeClass("whitetext");
+      $(".notifications").removeClass("darkMode");
+      $("#darkModeStyles").remove();
+      $(".navbar-toggler").removeClass("dark-toggler");
+      $(".navbar-toggler").removeClass("dark-toggler2");
+      darkflag = 0;
+      localStorage.setItem('darkMode', 'disabled'); // Save to local storage
+    }
+
+  $("#largeFont").click(function () {
+    if (textflag === 0) {
+      $("p").addClass("largeFont");
+      $("h1").addClass("largerH");
+      // $("body").addClass("mediumFont");
+      $(".navG").addClass("mediumFont");
+
+      textflag = 1;
+    } else {
+      $("p").removeClass("largeFont");
+      $("h1").removeClass("largerH");
+      $("body").removeClass("largeFont");
+      $(".navG").removeClass("mediumFont");
+
+      textflag = 0;
+    }
+  });
+
+  $("#acessability").click(function () {
+    if (flag === 0) {
+      $("#acessability").addClass("widthAccess");
+      flag = 1;
+    } else {
+      $("#acessability").removeClass("widthAccess");
+      flag = 0;
+    }
+    $("#accessMenu").toggle("drop");
+    return false;
   });

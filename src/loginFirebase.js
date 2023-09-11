@@ -41,11 +41,8 @@ Flogin.addEventListener('submit', (e) => {
  
   signInWithEmailAndPassword(auth, email, password)
     .then(cred => {
-      console.log('user logged in:', cred.user)
       window.alert("logged in")
       var logEmail = cred.user.email;
-      // Name, email address, and profile photo Url
-      // alert(logEmail)
       let usernumber
       getDocs(docAllusers).then((snapshot) => {
         let allUsers = []
@@ -53,7 +50,6 @@ Flogin.addEventListener('submit', (e) => {
           allUsers.push({...doc.data(), id:doc.id })
         })
         let userq=allUsers.length;
-        console.log(allUsers);
         for (let index = 0; index < userq; index++) {
           if(allUsers[index].email==logEmail)
               usernumber=index;
@@ -69,30 +65,46 @@ Flogin.addEventListener('submit', (e) => {
           location.href="admin.html"
         }
       })
-      // Flogin.reset()
-      // location.href="index.html"
-      // if (docSnap.exists()) {
-      //   console.log("work");
-      //   if(docSnap.data()=="Employer") {
-      //       location.href="employeer.html"
-
-      //    }
-      //   else {
-      //       location.href="index.html"
-
-      //   }
-      // } else {
-      //   // doc.data() will be undefined in this case
-      //   console.log("No such document!");
-      // }
-
-      // location.href="index.html"
     })
     .catch(err => {
       document.querySelector("#Alert_massage").innerHTML="Wrong password/username";
     })
 })
 
-onAuthStateChanged(auth,(user)=>{
-  console.log("User status changed",user);
-})
+let logEmail;
+onAuthStateChanged(auth, (user) => {
+    if (user != null) {
+      logEmail = user.email;
+      let usernumber;
+        getDocs(docAllusers).then((snapshot) => {
+          let allUsers = []
+          snapshot.docs.forEach((doc)=>{
+            allUsers.push({...doc.data(), id:doc.id })
+          })
+          let userq=allUsers.length;
+          for (let index = 0; index < userq; index++) {
+            if(allUsers[index].email==logEmail)
+                usernumber=index;
+             }
+          if(allUsers[usernumber].eOrS=="Work Searcher") {
+            location.href="worksearcher.html"
+           }
+          else if(allUsers[usernumber].eOrS=="Employer") {
+            location.href="employeer.html"
+           }
+          else if(allUsers[usernumber].eOrS==null) {
+            location.href="admin.html"
+         }
+        })
+    }
+  });
+
+// Spinner
+var spinner = function () {
+    setTimeout(function () {
+      if ($("#spinner").length > 0) {
+        $("#spinner").removeClass("show");
+      }
+    }, 1);
+};
+spinner();

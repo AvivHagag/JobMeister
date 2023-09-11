@@ -21,6 +21,7 @@
     );
   }
   pic();
+  
 
   // Sticky Navbar
   $(window).scroll(function () {

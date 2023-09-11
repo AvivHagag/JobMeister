@@ -20,16 +20,38 @@
 
 #nav2{
   display: none;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
 }
-
+.left-controls {
+  position: absolute;
+  left: 0;
+  top:16px;
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0; /* This prevents the container from shrinking on smaller screens */
+}
+@media (max-width: 991px) {
+  .left-controls {
+    margin-left: 8%;
+    top:26px;
+  }
+}
+@media (max-width: 750px) {
+  .left-controls {
+    margin-left: 12%;
+  }
+}
+@media (max-width: 500px) {
+  .left-controls {
+    margin-left: 16%;
+  }
+}
 #nav3{
   display: none;
 }
 
-/* .back-to-top .sticky-bottom {
-  bottom:100px;
-  transition: 0.5s;
-} */
 
 h4,
 h5,
@@ -60,6 +82,16 @@ h6,
 }
 
 /*** Button ***/
+#SearchBtn {
+  margin-top: auto;
+  margin-right: 0.5rem;
+}
+@media (max-width: 991px) {
+  #SearchBtn {
+    margin: 0;
+    width: 100%;
+  }
+}
 .logout {
   font-size: 0.8em;
   font-family: "Oswald", sans-serif;
@@ -270,12 +302,35 @@ a {
   /* margin: auto; */
   padding: 16% 12% 0 12%;
 }
+
 .asifke {
   height: 600px;
   width: 400px;
   display: flex;
   align-items: flex-end;
+  transition: max-height 0.5s ease, max-width 0.5s ease; /* add transition here */
 }
+
+/* Media query for screens smaller than 992px (Bootstrap's large breakpoint) */
+@media (max-width: 992px) {
+  .asifke {
+    height: 450px;
+    width: 300px;
+  }
+}
+
+/* Media query for screens smaller than 576px (Bootstrap's small breakpoint) */
+@media (max-width: 576px) {
+  .asifke {
+    height: 300px;
+    width: 200px;
+  }
+  #Responsive{     
+    border-bottom: solid white 0.1px;
+  }
+}
+
+
 .register {
   margin: 5% 3% 5% 0;
 }
@@ -433,23 +488,28 @@ input::placeholder {
   background-color: rgb(255, 255, 255);
 }
 
-/* img {
-  width: 25px;
-  /* border-radius: 50px; */
-  /* float: left;
-} */ 
+
 
 #imgAbout {
   width:400px;
-  /* position:absolute; */
   top:30px;
   border-radius: 35px;
 }
+#imgAbout2 {
+  display: none;
+}
+@media (max-width: 576px) {
+  #imgAbout {
+    width: 0%;
+  }
+  #imgAbout2 {
+    display: block;
+    width: 100%;
+    padding-top: 2%;
+    border-radius: 35px;
+  }
+}
 
-/* .darkMode {
-  background-color: #111;
-  color: #eee;
-} */
 .whitetext{
   color: #eee;
 }
@@ -516,6 +576,8 @@ input::placeholder {
   opacity: 0.9;
 } */
 /* notifc menu */
+
+
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200&display=swap");
 * {
   padding: 0px;
@@ -528,21 +590,23 @@ input::placeholder {
   line-height: 60px;
 }
 .icon span {
-  background: #f00;
-  padding: 7px;
-  border-radius: 50%;
+  /* background: #f00; */
+  padding: 4px;
+  border-radius: 60%;
   color: #fff;
   vertical-align: top;
-  margin-left: -25px;
+  margin-top: -50%;
+  margin-right: -10px;
+
 }
 .icon img {
   display: inline-block;
   width: 26px;
   margin-top: 4px;
 }
-.icon:hover {
+/* .icon:hover {
   opacity: 0.7;
-}
+} */
 .logo {
   flex: 1;
   margin-left: 50px;
@@ -550,34 +614,71 @@ input::placeholder {
   font-size: 20px;
   font-family: monospace;
 }
+
+/* This ensures a default order for devices wider than 786px */
+.responsive-orderBtn .col-6 {
+  order: 1;
+}
+.responsive-orderBtn .form-group {
+  order: 2;
+}
+
 .notifications {
-  width: 400px;
+  /* width: 400px;
   height: 0px;
   opacity: 0;
   position: absolute;
   top: 63px;
-  left: 142px;
+  left: 142px; */
+  width: 400px;
+  transition: width 0.3s ease; /* Transition for smooth resizing */
+  /* height: 0px; */
+  /* opacity: 0; */
+  position: absolute;
+  top: 98%;
+  left: 70%;
   border-radius: 5px 0px 5px 5px;
   background-color: #fff;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
-.circlebell {
-  top: 25px;
-  left: 207px;
-  font-size: 0.45rem;
+
+@media (max-width: 768px) {
+  .notifications {
+      width: 280px;
+  }
+  .ContactContainer {
+    text-align: right !important;
+  }
+  .CreatedForm{
+    text-align: right !important;
+  }
+  .responsive-orderBtn {
+    margin-top: -38px;
+  }
+  .responsive-orderBtn .col-6 {
+    order: 2;
+    margin-left: 50%;
+    margin-top: 2px;
+  }
+  .responsive-orderBtn .form-group {
+      order: 1;
+      padding-bottom: 16px;
+  }
 }
+
 .notifications h2 {
-  font-size: 14px;
+  font-size: 16px;
   padding: 10px;
   border-bottom: 1px solid #eee;
-  color: #999;
+  color: #605f5f;
 }
 .notifications h2 span {
   color: #f00;
+  margin-right: 2px;
 }
 .notifications-item {
   display: flex;
-  border-bottom: 1px solid #eee;
+  /* border-bottom: 1px solid #eee; */
   padding: 6px 9px;
   margin-bottom: 0px;
   cursor: pointer;
@@ -593,7 +694,7 @@ input::placeholder {
   border-radius: 50%;
   margin-top: 2px;
 }
-.notifications-item .text h4 {
+  .notifications-item .text h4 {
   color: #777;
   font-size: 16px;
   margin-top: 3px;
@@ -602,10 +703,85 @@ input::placeholder {
   color: #aaa;
   font-size: 12px;
 }
+@media (max-width: 768px) {
+  .notifications-item .text h4 {
+      font-size: 12px;
+  }
+  .notifications-item .text p {
+      font-size:10px
+  }
+  .notifications-item a {
+    font-size:10px
+}
+}
 
-/* .card .card-body{
-background:#F2F8FE;
-box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-backdrop-filter: blur(3.1px);
--webkit-backdrop-filter: blur(3.1px);
-} */
+#notificount {
+  margin: 2px;
+  padding: 2px;
+  color: white;
+}
+
+/* CSS */
+.card-content {
+  height: 120px; /* Adjust this value based on your preference */
+  overflow: hidden;
+  position: relative; /* Needed to position ellipsis at the bottom */
+}
+
+.card-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 100%; /* Ensures the text doesn't exceed card-content height */
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Number of lines to display before adding ellipsis */
+  -webkit-box-orient: vertical;
+}
+
+@media (max-width: 576px) {
+  .jumbotron-heading {
+    font-size:22px
+  }
+  #welcometext {
+    padding-top: 6px;
+    font-size: 18px;
+  }
+  .Added h5{
+    font-size: 16px;
+  }
+  /* .Added {
+    height: 5%;
+    width: 50%;
+    padding: 3px;
+  } */
+  .Added p{
+    font-size: 12px;
+  }
+  .Added .card-content{
+    height: 70px;
+  }
+  .mask {
+    width: 100%;
+  }
+}
+
+.DeleteModal {
+ margin-top: 50%;
+}
+
+.Mimg {
+  /* max-width: 230px; */
+  width: 100%;
+  border-radius: 8px;
+}
+
+.custom-line-height {
+  line-height: 1;
+  width: 100%;
+}
+
+#saveButton:hover {
+  color: white;
+}
+#UploadCV:hover {
+  color: white;
+}

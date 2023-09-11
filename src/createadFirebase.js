@@ -10,7 +10,6 @@ import {
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 
 import {} from "./main";
-import {} from "./createad";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDoC94Xlt0BHfsH_zLp8562xsKMW49mv8s",
@@ -43,7 +42,6 @@ getDocs(docAllusers).then((snapshot) => {
     allUsers.push({ ...doc.data(), id: doc.id });
   });
   let userq = allUsers.length;
-  console.log(allUsers);
   for (let index = 0; index < userq; index++) {
     if (allUsers[index].email == logEmail) {
       logCompany = allUsers[index].Company;
@@ -56,18 +54,16 @@ getDocs(docAllusers).then((snapshot) => {
     snapshot.docs.forEach((doc) => {
       sended.push({ ...doc.data(), id: doc.id });
     });
-    console.log(sended);
     let userNotifCount = 0;
     let sendedLength = sended.length;
     for (let f = 0; f < sendedLength; f++) {
       if (sended[f].emailofemployer == logEmail) {
         userNotifCount++;
-        console.log("check");
       }
     }
     if (userNotifCount > 0) {
       $("#bellnotif").append(
-        "<span class='circlebell position-absolute start-150 translate-middle badge rounded-pill bg-danger'>" +
+        "<span class='circlebell translate-middle badge bg-danger'>" +
           userNotifCount +
           "</span>"
       );
@@ -78,8 +74,6 @@ getDocs(docAllusers).then((snapshot) => {
     $("#bell").click(function (e) {
       var color = $(this).text();
       if (down) {
-        // alert("check");
-        // $(".added1").hide();
         $("#box").toggle("drop");
         $("#box").css("height", "0px");
         $("#box").css("opacity", "0");
@@ -92,16 +86,12 @@ getDocs(docAllusers).then((snapshot) => {
         $("#box").css("opacity", "1");
         down = true;
       }
-      console.log("checkbell");
       let sendedLength = sended.length;
-      console.log(sendedLength);
       let userNotifCount1 = 0;
 
       for (let i = 0; i < sendedLength; i++) {
         if (sended[i].emailofemployer === logEmail) {
           userNotifCount1++;
-          console.log("checkit" + i);
-          console.log(sended[i].downloadLink);
           $("#box").append(
             "<div class='added1 notifications-item'> <img src='/dist/img/occpics/occ" +
               sended[i].imgid +
@@ -113,7 +103,6 @@ getDocs(docAllusers).then((snapshot) => {
               i +
               "' class='mt-4 mx-3 fa-regular fa-trash-can'></i> </div>"
           );
-
           const buttonDeleteNotfi = document.getElementById("notidelete" + i);
           if (buttonDeleteNotfi) {
             buttonDeleteNotfi.addEventListener("click", function () {
@@ -127,10 +116,12 @@ getDocs(docAllusers).then((snapshot) => {
         document.querySelector("#notifcount").innerHTML = userNotifCount1;
       }
 
-      // }
       return false;
     });
   });
+  if (localStorage.getItem('darkMode') === 'enabled') {
+    activateDarkMode();
+  }
 });
 
 // sending data messaages
@@ -218,7 +209,7 @@ function whichnumber(x) {
   }
 }
 
-const logoutButton = document.querySelector(".logoutBtn");
+const logoutButton = document.querySelector(".logoutBtn2");
 logoutButton.addEventListener("click", () => {
   signOut(auth)
     .then(() => {
@@ -226,16 +217,127 @@ logoutButton.addEventListener("click", () => {
       location.href = "index.html";
     })
     .catch((err) => {
-      console.log(err.message);
+    });
+});
+const logoutButton2 = document.querySelector(".logoutBtn3");
+logoutButton2.addEventListener("click", () => {
+  signOut(auth)
+    .then(() => {
+      alert("signout");
+      location.href = "index.html";
+    })
+    .catch((err) => {
     });
 });
 
 onAuthStateChanged(auth, (user) => {
-  console.log("User status changed", user);
-  if (user != null) {
-    logEmail = user.email;
-  }
   if (user == null) {
     location.href = "index.html";
+  } else {
+    logEmail = user.email;
+    let usernumber;
+      getDocs(docAllusers).then((snapshot) => {
+        let allUsers = []
+        snapshot.docs.forEach((doc)=>{
+          allUsers.push({...doc.data(), id:doc.id })
+        })
+        let userq=allUsers.length;
+        for (let index = 0; index < userq; index++) {
+          if(allUsers[index].email==logEmail)
+              usernumber=index;
+           }
+        if(allUsers[usernumber].eOrS=="Work Searcher") {
+          location.href="worksearcher.html"
+         }
+         if(allUsers[usernumber].eOrS==null) {
+          location.href="admin.html"
+       }
+      })
   }
 });
+
+let flag = 0;
+let darkflag = 0;
+let textflag = 0;
+  $("#accessMenu").hide();
+
+  $(document).ready(function() {
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        activateDarkMode();
+        darkflag = 1;
+    } else {
+        deactivateDarkMode();
+        darkflag = 0;
+    }
+  });
+  
+  $("#darkBtn").click(function () {
+    if (darkflag === 0) {
+        activateDarkMode();
+        darkflag = 1;
+    } else {
+        deactivateDarkMode();
+        darkflag = 0;
+    }
+  });
+
+  function activateDarkMode() {
+      $("#navbarCollapse").addClass("darkMode");
+      $(".navbar").addClass("darkMode");
+      $(".nav-item").addClass("whitetext");
+      $("h1").addClass("whitetext"); 
+      $("body").addClass("darkMode");
+      $(".container-xxl").removeClass("bg-light");
+      $(".footer").removeClass("bg-white");
+      $("#bellnotif").addClass("whitetext");
+      $(".notifications").addClass("darkMode");
+      $("head").append("<style id='darkModeStyles'>.notifications-item:hover { background-color: #A9A9A9 !important;}</style>");
+      $(".navbar-toggler").addClass("dark-toggler");
+      $(".navbar-toggler").addClass("dark-toggler2");
+      darkflag = 1;
+      localStorage.setItem('darkMode', 'enabled');  // Save to local storage
+    } 
+    function deactivateDarkMode() {
+      $(".container-xxl").addClass("bg-light");
+      $("#navbarCollapse").removeClass("darkMode");
+      $(".navbar").removeClass("darkMode");
+      $(".nav-item").removeClass("whitetext");
+      $("h1").removeClass("whitetext");
+      $("body").removeClass("darkMode");
+      $("#bellnotif").removeClass("whitetext");
+      $(".notifications").removeClass("darkMode");
+      $("#darkModeStyles").remove();
+      $(".navbar-toggler").removeClass("dark-toggler");
+      $(".navbar-toggler").removeClass("dark-toggler2");
+      darkflag = 0;
+      localStorage.setItem('darkMode', 'disabled'); // Save to local storage
+    }
+
+  $("#largeFont").click(function () {
+    if (textflag === 0) {
+        $("p").addClass("largeFont");
+        $("h1").addClass("largerH");
+      // $("body").addClass("mediumFont");
+        $(".navG").addClass("mediumFont");
+        textflag = 1;
+    } else {
+        $("p").removeClass("largeFont");
+        $("h1").removeClass("largerH");
+        $("body").removeClass("largeFont");
+        $(".navG").removeClass("mediumFont");
+        textflag = 0;
+    }
+  });
+
+  $("#acessability").click(function () {
+    if (flag === 0) {
+      $("#acessability").addClass("widthAccess");
+      flag = 1;
+    } else {
+      $("#acessability").removeClass("widthAccess");
+      flag = 0;
+    }
+    $("#accessMenu").toggle("drop");
+    return false;
+  });
+

@@ -22,7 +22,35 @@ const app = initializeApp(firebaseConfig)
 
 // init services
 const db = getFirestore(app);
+const auth = getAuth();
 
 // collection ref
-
 const colRef = collection(db,'Data');
+const docAllusers = collection(db, "users");
+let logEmail;
+onAuthStateChanged(auth, (user) => {
+  if (user != null) {
+    logEmail = user.email;
+    let usernumber;
+      getDocs(docAllusers).then((snapshot) => {
+        let allUsers = []
+        snapshot.docs.forEach((doc)=>{
+          allUsers.push({...doc.data(), id:doc.id })
+        })
+        let userq=allUsers.length;
+        for (let index = 0; index < userq; index++) {
+          if(allUsers[index].email==logEmail)
+              usernumber=index;
+           }
+        if(allUsers[usernumber].eOrS=="Work Searcher") {
+          location.href="worksearcher.html"
+         }
+        else if(allUsers[usernumber].eOrS=="Employer") {
+          location.href="employeer.html"
+         }
+        else if(allUsers[usernumber].eOrS==null) {
+          location.href="admin.html"
+       }
+      })
+  }
+});

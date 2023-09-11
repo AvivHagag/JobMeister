@@ -28,19 +28,12 @@ const auth = getAuth();
 const signUpForm = document.querySelector('.Fsignup')
 signUpForm.addEventListener('submit', (e) => {
   e.preventDefault()
-// if(signUpForm.email.value=="") {
-//     document.querySelector("#msg1").innerHTML="אנא הכנס שם פרטי";
-// }
-// if(signUpForm.email.value!="") {
-//   document.querySelector("#msg1").innerHTML="";
-// }
 const email = signUpForm.email.value
 const password = signUpForm.password.value
 const firstname = signUpForm.firstname.value
 const lastname = signUpForm.lastname.value
 const EmployerOrSearcher = signUpForm.EmployerOr.value
 const passwordlength=password.length;
-console.log(passwordlength);
 if(firstname!="" && lastname!="" && email!="" && password!="" && passwordlength>=6) {
   document.querySelector("#msg1").innerHTML="";
   document.querySelector("#msg2").innerHTML="";
@@ -130,7 +123,41 @@ else {
 }
 })
 
+const docAllusers = collection(db, "users");
+let logEmail;
+onAuthStateChanged(auth, (user) => {
+  if (user != null) {
+    logEmail = user.email;
+    let usernumber;
+      getDocs(docAllusers).then((snapshot) => {
+        let allUsers = []
+        snapshot.docs.forEach((doc)=>{
+          allUsers.push({...doc.data(), id:doc.id })
+        })
+        let userq=allUsers.length;
+        for (let index = 0; index < userq; index++) {
+          if(allUsers[index].email==logEmail)
+              usernumber=index;
+           }
+        if(allUsers[usernumber].eOrS=="Work Searcher") {
+          location.href="worksearcher.html"
+         }
+        else if(allUsers[usernumber].eOrS=="Employer") {
+          location.href="employeer.html"
+         }
+        else if(allUsers[usernumber].eOrS==null) {
+          location.href="admin.html"
+       }
+      })
+  }
+});
 
-onAuthStateChanged(auth,(user)=>{
-  console.log("User status changed",user);
-})
+// Spinner
+var spinner = function () {
+  setTimeout(function () {
+    if ($("#spinner").length > 0) {
+      $("#spinner").removeClass("show");
+    }
+  }, 1);
+};
+spinner();

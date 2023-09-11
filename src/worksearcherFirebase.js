@@ -12,7 +12,6 @@ import {
 } from "firebase/firestore";
 import { getAuth, signOut, onAuthStateChanged, reload } from "firebase/auth";
 import {} from "./main";
-import {} from "./worksearcher";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDoC94Xlt0BHfsH_zLp8562xsKMW49mv8s",
@@ -38,7 +37,6 @@ let allUsers = [];
 let allSavedAds= [];
 let allSaveAdslength=[];
 let flagAds =[true];
-console.log(flagAds);
 let usernumber, useremail, userfirstname, userlastname;
 
 
@@ -49,7 +47,6 @@ getDocs(docAllusers).then((snapshot) => {
     allUsers.push({ ...doc.data(), id: doc.id });
   });
   let userq = allUsers.length;
-  console.log(allUsers);
   for (let index = 0; index < userq; index++) {
     if (allUsers[index].email == logEmail) {
       useremail = allUsers[index].email;
@@ -64,18 +61,45 @@ getDocs(docAllusers).then((snapshot) => {
 });
 
 onAuthStateChanged(auth, (user) => {
-  console.log("User status changed", user);
-  if (user != null) {
-    logEmail = user.email;
-  } 
-  else {
+  if (user == null) {
     location.href = "index.html";
+  } else {
+    logEmail = user.email;
+    let usernumber;
+      getDocs(docAllusers).then((snapshot) => {
+        let allUsers = []
+        snapshot.docs.forEach((doc)=>{
+          allUsers.push({...doc.data(), id:doc.id })
+        })
+        let userq=allUsers.length;
+        for (let index = 0; index < userq; index++) {
+          if(allUsers[index].email==logEmail)
+              usernumber=index;
+           }
+        if(allUsers[usernumber].eOrS=="Employer") {
+          location.href="employeer.html"
+         }
+         if(allUsers[usernumber].eOrS==null) {
+          location.href="admin.html"
+       }
+      })
   }
 });
 
 
 const logoutButton = document.querySelector(".logoutBtn");
 logoutButton.addEventListener("click", () => {
+  signOut(auth)
+    .then(() => {
+      alert("signout");
+      location.href = "index.html";
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+});
+const logoutButton2 = document.querySelector(".logoutBtn2");
+logoutButton2.addEventListener("click", () => {
   signOut(auth)
     .then(() => {
       alert("signout");
@@ -120,7 +144,6 @@ getDocs(adColRef).then((snapshot) => {
           Savetoid=index;
       }
     }
-    console.log(ids2);
     adSize = Ads.length;
     let flag = 0;
     let flagStart = 0;
@@ -128,15 +151,6 @@ getDocs(adColRef).then((snapshot) => {
     const SearchBtn = document.getElementById("SearchBtn");
     SearchBtn.addEventListener("click", function () {
       if (SearchBtn) {
-        console.log(Thum);
-        console.log(Loc);
-        console.log(Per);
-        // if(Thum=="0" && Loc===null && Per===null) {
-        //   flag=0;
-        //   alert("flag="+flag);
-        //   flagStart=1;
-        //   Running1();
-        // }
         if (Thum != "0" && Loc != "0" && Per != "0") {
           flag = 1;
           // alert("flag=" + flag);
@@ -187,7 +201,6 @@ getDocs(adColRef).then((snapshot) => {
       $(".Added").remove();
       let counterView=0
       for (let index = 0; index < adSize; index++) {
-        console.log(flag);
         switch (flag) {
           case 0:
             if (Ads[index].accepted == true) {
@@ -203,7 +216,6 @@ getDocs(adColRef).then((snapshot) => {
                   "' class='btn btn-sm btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalWS'>צפה</button></div><small class='text-muted'>" +Ads[index].Date +"</small></div></div></div></div>"
               );
             }
-            console.log("case0");
             break;
           case 1:
             if (
@@ -224,7 +236,6 @@ getDocs(adColRef).then((snapshot) => {
                   "' class='btn btn-sm btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalWS'>צפה</button></div><small class='text-muted'>" +Ads[index].Date +"</small></div></div></div></div>"
               );
             }
-            console.log("case1");
             break;
           case 2:
             if (
@@ -244,7 +255,6 @@ getDocs(adColRef).then((snapshot) => {
                   "' class='btn btn-sm btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalWS'>צפה</button></div><small class='text-muted'>לפני שעה</small></div></div></div></div>"
               );
             }
-            console.log("case2");
             break;
           case 3:
             if (
@@ -264,7 +274,6 @@ getDocs(adColRef).then((snapshot) => {
                   "' class='btn btn-sm btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalWS'>צפה</button></div><small class='text-muted'>לפני שעה</small></div></div></div></div>"
               );
             }
-            console.log("case3");
             break;
           case 4:
             if (
@@ -284,7 +293,6 @@ getDocs(adColRef).then((snapshot) => {
                   "' class='btn btn-sm btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalWS'>צפה</button></div><small class='text-muted'>לפני שעה</small></div></div></div></div>"
               );
             }
-            console.log("case4");
             break;
           case 5:
             if (Ads[index].accepted == true && Ads[index].dep == Thum) {
@@ -300,7 +308,6 @@ getDocs(adColRef).then((snapshot) => {
                   "' class='btn btn-sm btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalWS'>צפה</button></div><small class='text-muted'>לפני שעה</small></div></div></div></div>"
               );
             }
-            console.log("case5");
             break;
           case 6:
             if (Ads[index].accepted == true && Ads[index].location == Loc) {
@@ -316,7 +323,6 @@ getDocs(adColRef).then((snapshot) => {
                   "' class='btn btn-sm btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalWS'>צפה</button></div><small class='text-muted'>לפני שעה</small></div></div></div></div>"
               );
             }
-            console.log("case6");
             break;
           case 7:
             if (Ads[index].accepted == true && Ads[index].percent == Per) {
@@ -332,12 +338,12 @@ getDocs(adColRef).then((snapshot) => {
                   "' class='btn btn-sm btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalWS'>צפה</button></div><small class='text-muted'>לפני שעה</small></div></div></div></div>"
               );
             }
-            console.log("case7");
             break;
-          // default:
-          //   console.log(`Sorry, we are out of ${expr}.`);
         }
       }
+      if (localStorage.getItem('darkMode') === 'enabled') {
+        activateDarkMode();
+      }  
       for (let index = 0; index < adSize; index++) {
           const buttonS = document.getElementById("saveButton");
           const buttonE2 = document.getElementById("view" + index);
@@ -375,17 +381,12 @@ getDocs(adColRef).then((snapshot) => {
                   snapshot.docs.forEach((doc) => {
                     allSavedAds.push({ ...doc.data(), id: doc.id });
                   });
-                  console.log(allSavedAds);
                   let SaveAdsQ = allSavedAds.length;
                   allSaveAdslength[0] = allSavedAds.length;
                   for (let i= 0; i < SaveAdsQ; i++) {
-                    console.log(allSavedAds[i]);
                     if (allSavedAds[i].Saveremail == logEmail) {
-                      console.log(Ads[index].id);
-                      console.log(allSavedAds[i].idOfAds);
                       if(Ads[index].id==allSavedAds[i].idOfAds) {
                         SavedAdsindex[0]=i;
-                        console.log("change botton");
                         buttonS.style.background = "#4CAF50";
                         buttonS.style.color="white";
                         buttonS.style.borderColor="white";
@@ -394,7 +395,6 @@ getDocs(adColRef).then((snapshot) => {
                         break;
                       }
                       else {
-                        console.log("Regular botton");
                         buttonS.style.background=null;
                         buttonS.style.color=null;
                         buttonS.style.borderColor=null;
@@ -423,7 +423,7 @@ getDocs(adColRef).then((snapshot) => {
                 else if(flagAds[0]==false) {
                   const docSavedAds = doc(db, "SavedAds",allSavedAds[SavedAdsindex[0]].id);
                    deleteDoc(docSavedAds);
-                  console.log("Unsaved this ad");
+                  console.log("המשרה הוסרה מהמועדפים");
                 }
               })
             }
@@ -438,11 +438,6 @@ getDocs(adColRef).then((snapshot) => {
         bottonSendCV.addEventListener("click", function() {
           let linkU = document.getElementById("CVid").value;
           if(validURL(linkU))   {
-            console.log(true);
-            console.log(linkU);
-            console.log(logEmail);
-            console.log(Ads[adsNum].id);
-            console.log(Ads[adsNum].emailofemployer);
             const addSendLinks=collection(db,'Sendedlinks');
                   addDoc(addSendLinks,{
                     emailofemployer: Ads[adsNum].emailofemployer,
@@ -458,7 +453,6 @@ getDocs(adColRef).then((snapshot) => {
             document.getElementById("cvDiv").style.display = "none";
           }
           else
-            console.log(false);
             document.querySelector("#ErrorSend").innerHTML ="אנא הכנס קישור תקין"
         })
       }
@@ -477,3 +471,120 @@ getDocs(adColRef).then((snapshot) => {
       '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
     return !!pattern.test(str);
   }
+
+let flag = 0;
+let darkflag = 0;
+let textflag = 0;
+$("#accessMenu").hide();
+
+$(document).ready(function() {
+  if (localStorage.getItem('darkMode') === 'enabled') {
+      activateDarkMode();
+      darkflag = 1;
+  } else {
+      deactivateDarkMode();
+      darkflag = 0;
+  }
+});
+
+$("#darkBtn").click(function () {
+  if (darkflag === 0) {
+      activateDarkMode();
+      darkflag = 1;
+  } else {
+      deactivateDarkMode();
+      darkflag = 0;
+  }
+});
+
+function activateDarkMode() {
+        $("#navbarCollapse").addClass("darkMode");
+        $(".navbar").addClass("darkMode");
+        $(".nav-item").addClass("whitetext");
+        $(".loginbtn").removeClass("btn-outline-dark")
+        $(".loginbtn").addClass("bg-white")
+        $("h1").addClass("whitetext");
+        $("h3").removeClass("text-black");
+        $("h3").addClass("whitetext");
+        $("h5").addClass("whitetext");
+        $("p").addClass("text-white"); 
+        $("body").addClass("darkMode");
+        $(".row").addClass("darkMode");
+        $(".bgdark").removeClass("bg-light");
+        $(".bgf").addClass("darkMode")
+        $(".card").addClass("bg-dark border border-secondary");
+        $(".modal-header").removeClass("bg-light")
+        $(".text-dark").addClass("whitetext");
+        $(".modal-content").addClass("darkMode");
+        $("#saveButton").removeClass("btn-outline-primary");
+        $("#UploadCV").removeClass("btn-outline-primary");
+        $("#saveButton").addClass("btn-outline-custome");
+        $("#UploadCV").addClass("btn-outline-custome");
+        $(".btn-close").addClass("btn-close-white");
+        $(".navbar-toggler").addClass("dark-toggler");
+        $(".navbar-toggler").addClass("dark-toggler2");
+        darkflag = 1;
+        localStorage.setItem('darkMode', 'enabled');  // Save to local storage
+}
+    function deactivateDarkMode() {
+      $("#navbarCollapse").removeClass("darkMode");
+      $(".navbar").removeClass("darkMode");
+      $(".nav-item").removeClass("whitetext");
+      $(".loginbtn").removeClass("bg-white")
+      $(".loginbtn").addClass("btn-outline-dark")
+      $("h1").removeClass("whitetext");
+      $("h3").removeClass("whitetext");
+      $("h3").addClass("text-black");
+      $("h5").removeClass("whitetext");
+      $("p").removeClass("text-white"); 
+      $("body").removeClass("darkMode");
+      $(".row").removeClass("darkMode");
+      $(".bgdark").addClass("bg-light");
+      $(".bgf").removeClass("darkMode")
+      $(".card").removeClass("bg-dark border border-secondary");
+      $(".modal-header").addClass("bg-light")
+      $(".text-dark").removeClass("whitetext");
+      $(".modal-content").removeClass("darkMode");
+      $("#saveButton").addClass("btn-outline-primary");
+      $("#UploadCV").addClass("btn-outline-primary");
+      $("#saveButton").removeClass("btn-outline-custome");
+      $("#UploadCV").removeClass("btn-outline-custome");
+      $(".btn-close").removeClass("btn-close-white");
+      $(".navbar-toggler").removeClass("dark-toggler");
+      $(".navbar-toggler").removeClass("dark-toggler2");
+      darkflag = 0;
+      localStorage.setItem('darkMode', 'disabled'); // Save to local storage
+    }
+
+  $("#largeFont").click(function () {
+    if (textflag === 0) {
+      $("p").addClass("largeFont");
+      $("h1").addClass("largerH");
+      $("h3").addClass("largerH2");
+      $(".navG").addClass("mediumFont");
+
+      textflag = 1;
+    } else {
+      $("p").removeClass("largeFont");
+      $("h1").removeClass("largerH");
+      $("h3").removeClass("largerH2");
+      $("body").removeClass("largeFont");
+      $(".navG").removeClass("mediumFont");
+
+      textflag = 0;
+    }
+  });
+
+  $("#acessability").click(function () {
+    if (flag === 0) {
+      $("#acessability").addClass("widthAccess");
+
+      flag = 1;
+    } else {
+      $("#acessability").removeClass("widthAccess");
+      flag = 0;
+    }
+    $("#accessMenu").toggle("drop");
+    return false;
+  });
+
