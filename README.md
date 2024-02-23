@@ -2,7 +2,7 @@
 # JobMeister
 
 ## Description
-This project is an all-in-one job search and recruitment platform designed to connect job seekers with employers. With a user-friendly interface, job seekers can easily search and apply for jobs, while employers can create and post job listings to attract qualified candidates. The platform is built using modern technologies such as Node.js, webpack and npm to ensure smooth performance and scalability. In addition, the integration of jsPDF provides a smooth and easy way to create and export important documents and reports related to data on the site such as: ads sent or data of all the jobs on the site.
+This project is an all-in-one job search and recruitment platform designed to connect job seekers with employers. With a user-friendly interface, job seekers can easily search and apply for jobs, while employers can create and post job listings to attract qualified candidates. The platform is built using modern technologies to ensure smooth performance and scalability. In addition, the integration of jsPDF provides a smooth and easy way to create and export important documents and reports related to data on the site such as ads sent or data of all the jobs on the site.
 ![alt text](https://user-images.githubusercontent.com/114755882/212302685-2fecbe79-157d-4bf9-b20c-a30d5260b06b.png)
 
 ## Project Website
@@ -35,16 +35,5 @@ Visit our [project website](https://jobmeistersite.netlify.app) to learn more ab
 4. Push to the branch: `git push origin my-new-feature`
 5. Submit a pull request
 
-## Technologies
-- Node.js
-- npm
-- webpack
-- jsPdf
-
-## Team
-- Aviv Hagag
-- Daniel Arvili
-- Daniel Yakobov
-- Tomer Elimelech
 
 
